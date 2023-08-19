@@ -1,0 +1,23 @@
+{
+  "name": "pokeapi",
+  "version": "1.0.0",
+  "description": "apirest de pokemon",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lubarrolleta/pokeapi.git"
+  },
+  "author": "luis barrolleta",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/lubarrolleta/pokeapi/issues"
+  },
+  "homepage": "https://github.com/lubarrolleta/pokeapi#readme",
+  "devDependencies": {
+    "eslint": "^8.47.0"
+  }
+}
