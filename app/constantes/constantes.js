@@ -1,1 +1,1 @@
-export const ENCRYPT = true; // encryptar contenido
+export const ENCRYPT = false; // encryptar contenido

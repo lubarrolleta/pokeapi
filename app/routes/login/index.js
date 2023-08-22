@@ -11,10 +11,10 @@ login.post("/", async (req, res) => {
   const { email, pass } = req.body;
 //   console.log({ email }, "REG HH");
   const { data, status, statusText } = await new Querys().loginPost({ email });
-
+    console.log(data,status,'data line 14');
   let dataPrev = {};
-  if (status === 200) {
-    const validaPass = await new Crypto().validaPass(pass, data.pass);
+  if (status === 200 ) {
+    const validaPass = req.body.hasOwnProperty('pass') ? await new Crypto().validaPass(pass, data.pass) : {message:false};
     if (validaPass.message === true) {
       res.cookie("token", new Crypto().getToken(data), {
         maxAge: 60 * 60 * 24 * 7 * 1000, // Duración de 7 dias
@@ -36,10 +36,14 @@ login.post("/", async (req, res) => {
       res.setHeader("Content-Type", "application/json");
       res.status(status).json(dataPrev);
     } else {
+        console.log('not');
       dataPrev = validaPass;
       res.clearCookie("token");
-      res.status(400).json(dataPrev);
+      res.status(400).json({status:400,statusText:"Invalid",data: dataPrev});
     }
+  }else{
+    res.status(status).json({status,statusText,data});
+
   }
 
   // res.status(status).json(dataPrev).cookie('user','value dos');

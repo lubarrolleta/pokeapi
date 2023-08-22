@@ -97,13 +97,15 @@ export class Querys {
       };
 
       const consulta = await axios(config);
+      console.log(consulta);
       if (consulta.status === 200 && consulta.statusText === "OK") {
-        console.log(consulta.data);
+        
         const response = {
           status: !consulta.data ? 404 : consulta.status,
           statusText: !consulta.data ? "fail" : consulta.statusText,
-          data: consulta.data,
+          data: !consulta.data ? {message:'user not created'} : consulta.data,
         };
+
         return response ? response : null;
       }
     } catch (error) {
