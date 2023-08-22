@@ -6,3 +6,6 @@ Esta api cuenta con su propia generacion de tokens para la autenticacion de usua
 GET '/users' => nos muestra los usuarios registrados en la db de mongodb , podemos encryptar la data (/constantes/ENCRYPT= true/false).
 POST '/favorites' => podemos agregar nuevos pokemons a la lista de favoritos {id,name, url, poster}.
 GET '/favorites/:id' => nos muestra los la lista de de pokemons favoritos de un usuario.
+
+# clonar la api git clone https://github.com/lubarrolleta/pokeapi.git
+# cargar los package.json npm i
