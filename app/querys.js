@@ -15,14 +15,19 @@ export class Querys {
     this.#data = data;
   }
   async postFavorites(headers, body) {
-    console.log(headers, body);
+    // console.log(headers, body);
+    // console.log(typeof(body));
+    // console.log(Object.values(body)[1],'values');
+    
+    const dodyParse = body;
+    // console.log(dodyParse);
     try {
       const iduser = await new Crypto().decryt(
         headers.authorization.replace("Bearer ", "")
       );
       const dataPrev = {
         ["email"]: iduser?.email,
-        ...body,
+        ...dodyParse,
       };
       // console.log(dataPrev);
       const config = {
@@ -71,20 +76,20 @@ export class Querys {
         const response = {
           status: !consulta.data ? 404 : consulta.status,
           statusText: !consulta.data ? "fail" : consulta.statusText,
-          data: consulta.data,
+          data: !consulta.data ? {data:null}:consulta.data,
         };
         // console.log(consulta.data);
         return response ? response : null;
       }
     } catch (error) {
       console.error(error);
-      return null;
+      return {status: 404, statusText:'Error Server',data:{results:[]}};
     }
     return data;
   }
   async loginPost(data) {
-    // console.log(data, "LINE 14");
     try {
+      // console.log(data, "LINE 14");
       const config = {
         method: "POST",
         url: "https://us-east-1.aws.data.mongodb-api.com/app/data-fdyqt/endpoint/login",
@@ -97,20 +102,20 @@ export class Querys {
       };
 
       const consulta = await axios(config);
-      console.log(consulta);
+      console.log(consulta.data);
       if (consulta.status === 200 && consulta.statusText === "OK") {
         
         const response = {
-          status: !consulta.data ? 404 : consulta.status,
-          statusText: !consulta.data ? "fail" : consulta.statusText,
-          data: !consulta.data ? {message:'user not created'} : consulta.data,
+          status: !consulta.data ? 406 : consulta.status,
+          statusText: !consulta.data ? "user not created" : consulta.statusText,
+          data: !consulta.data ? {message:'user not created , Register'} : consulta.data,
         };
 
-        return response ? response : null;
+        return response ;
       }
     } catch (error) {
       console.error(error);
-      return null;
+      return error;
     }
   }
   async getFavoritesPokemons(id) {
@@ -150,6 +155,61 @@ export class Querys {
       return null;
     }
   }
+  async newUserPost(data){
+    try {
+      const config = {
+        method:"post",
+        url :'https://us-east-1.aws.data.mongodb-api.com/app/data-fdyqt/endpoint/newUserPost',
+        headers:{
+          "Content-Type": "application/json",
+          "Access-Control-Request-Headers": "*",
+          "api-key": process.env.APIKEYMONGO,
+          data:data
+        },
+        // data: data.replace(/""/g,'')
+      };
+      const consulta = await axios(config);
+      const dataPrev ={
+        status: consulta.status,
+        statusText: consulta.statusText,
+        data:consulta.data
+      }
+      return dataPrev;
+    } catch (error) {
+      console.error(error);
+      return error;
+    }
+  }
+  async getMe(data) {
+    try {
+      const config = {
+        method:"POST",
+        url :'https://us-east-1.aws.data.mongodb-api.com/app/data-fdyqt/endpoint/me',
+        headers:{
+          "Content-Type": "application/json",
+          "Access-Control-Request-Headers": "*",
+          "api-key": process.env.APIKEYMONGO,
+          data:data
+        }
+        
+      }
+      const consulta = await axios(config);
+      const dataPrev ={
+        status: consulta.status,
+        statusText: consulta.statusText,
+         data: consulta.data ? {
+          id:consulta.data['_id'],
+          email:consulta.data.email,
+          name:consulta.data.name,
+          favorites: consulta.data.favorites
+        } : {message:"NOT"}
+      }
+      return dataPrev;
+    } catch (error) {
+      console.error(error);
+      return error.response
+    }
+  }
   async getUser() {
     try {
       var config = {
@@ -163,15 +223,16 @@ export class Querys {
         // data: data
       };
       const consulta = await axios(config);
+      console.log(consulta.data);
       if (consulta.status === 200 && consulta.statusText === "OK") {
         const response = {
           status: consulta.status,
           statusText: consulta.statusText,
           data: consulta.data.map((data) => ({
             ["_id"]: data["_id"],
-            name: data.name,
+            name: data?.name,
             email: new Crypto().encryptPass(data.email),
-            favorites: data.favorites,
+            favorites: data?.favorites,
           })), // mapeo la respuesta encryto el correo
         };
         console.log(consulta.data);

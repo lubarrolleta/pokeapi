@@ -40,10 +40,10 @@ export class Crypto {
     try {
       const simplo = new SimpleCrypto(pass);
       const valida = simplo?.decrypt(atob(data));
-      return valida && { message: true };
+      return valida && { message: 'true' };
     } catch (error) {
       console.error(error);
-      return { message: "Invalid" };
+      return { message: "Pass or Email Incorrect" };
     }
   }
   encryptPass(data) {

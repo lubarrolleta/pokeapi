@@ -9,7 +9,7 @@ pokemon.get("/", async (req, res) => {
   // console.log(req.method);
   const dataPrev = { method: req.method, url: req.originalUrl };
   const { data, status, statusText } = await new Querys().getPokemons(dataPrev);
-  // console.log(consulta,'linea 46');
+  // console.log(data,'linea 46');
   const modData = (data) => {
     const dataPrev = data.results.map((data) => ({// mapeo los pokemon para mostrar imagenes ya que la api de fabrica no tiene estas opciones
       id: data.url.split("/").at(-2),
@@ -20,7 +20,7 @@ pokemon.get("/", async (req, res) => {
     }));
     const next = data.next && data.next.replace(process.env.pokemon, "");
     const previous =
-      data.previous && data.next.replace(process.env.pokemon, "");
+      data.previous && data.previous.replace(process.env.pokemon, "");
     // const dataEncrypted = new Crypto().encryt(exportData);
     const exportData = {
       count: data.count,
@@ -32,7 +32,9 @@ pokemon.get("/", async (req, res) => {
     // console.log(new Crypto().encryt(exportData));
     return exportData;
   };
-  console.log(process.env.ENCRYPT);
+  // console.log(process.env.ENCRYPT);
+  res.setHeader('Access-Control-Allow-Origin',' http://localhost:3001');
+
   res
     .status(status)
     .json({

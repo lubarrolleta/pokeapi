@@ -1,0 +1,32 @@
+import React, { useEffect, useState } from 'react';
+import { Outlet, useLocation } from 'react-router-dom';
+import { URLAPIREST } from '../../Constants/constantes';
+import ShowPokemon from './show pokemon/ShowPokemon';
+
+const Pokemons = () => {
+    const [data, setData] = useState(undefined);
+    const {search} = useLocation();
+// console.log(search);
+    const consulta = async()=>{
+        try {
+            const getPokemons = await fetch(URLAPIREST+'/pokemon'+search);
+            const dataPokemons = await getPokemons.json();
+            
+            setData(dataPokemons.status=== 200 ? dataPokemons: false);
+        } catch (error) {
+            console.error(error);
+            return null;
+        }
+    }
+    useEffect(() => {
+        consulta()
+    }, [search]);
+    return (
+        <>
+        {!data ? <h1>LOADIND</h1> : <ShowPokemon data={data}/>}
+        
+        </>
+    );
+}
+
+export default Pokemons;

@@ -1,0 +1,1 @@
+export const URLAPIREST = 'http://localhost:3000';

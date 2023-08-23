@@ -17,8 +17,9 @@ app.use(bodyParser.json({extended: true}));
 const route = Router();
 
 app.get('/', function(req, res) {
-    const randon = new Crypto();
-    console.log(randon.randon());
+    // const randon = new Crypto();
+    // console.log(randon.randon());
+    res.setHeader('Access-Control-Allow-Origin',' http://localhost:3001');
     res.json({ mensaje: 'Bienvenido a la api' })   
 });
 
