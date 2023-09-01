@@ -5,10 +5,11 @@ import { Link } from "react-router-dom";
 
 const Header = () => {
   const { data } = useAuth();
+//   console.log(data);
   const [datos, setDatos] = useState(null);
   useEffect(() => {
     setDatos(
-      data.auth.token ? new Crypto().decodeToken(data.auth.token) : null
+      data.auth.token  ? new Crypto().decodeToken(data.auth.token) : null
     );
   }, [data]);
   return (

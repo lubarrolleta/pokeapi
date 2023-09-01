@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import "./App.css";
 import Layout from "./layout/Layout";
 import { AuthContext } from "./context/AuthContext";
 import Modal from "./pages/Modal";
 import { useAuth } from "./hooks/useAuth";
-import { setTokens } from "./context/localStorage";
+import { removeTokens, setTokens } from "./context/localStorage";
 import { Crypto } from "./context/Crypto";
 import { Querys } from "./context/Querys";
 function App() {
@@ -36,7 +36,16 @@ function App() {
       
     }));
   };
-  
+  // logout
+  const route = useNavigate();
+
+  const logout = useCallback(() => {
+    if(auth){
+      removeTokens();
+      setAuth({id:null,token:null});
+      route('/')
+    }
+  },[auth,route])
   useEffect( () => {
     (async () => {
       if (window.localStorage.getItem('token')){
@@ -64,6 +73,7 @@ function App() {
     data: {
       auth,
       login,
+      logout,
       setFavorites,
       favorites: {
         favorites,
@@ -72,6 +82,7 @@ function App() {
         setFavorites,
       },
     },
+    setFavorites,
     modal: {
       openModal,
       showModal,
@@ -79,8 +90,7 @@ function App() {
       contentModal,
       settitleModal,
     },
-  }),[auth,showModal,titleModal,contentModal,favorites,setFavorites,settitleModal,favoritesUsers]) 
-  
+  }),[auth,showModal,titleModal,contentModal,favorites,setFavorites,settitleModal,favoritesUsers,logout]) 
   return (
     <>
       <AuthContext.Provider value={authData}>

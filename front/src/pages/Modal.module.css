@@ -1,0 +1,13 @@
+.modal{
+    position: absolute;
+    top: 50%;
+    ::backdrop{
+        background-color: aquamarine;
+
+    }
+}
+.modal::backdrop{
+    
+    background-color: aquamarine;
+}
+

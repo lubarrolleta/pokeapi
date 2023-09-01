@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FcLike } from "react-icons/fc";
 import { useAuth } from "../../../hooks/useAuth";
 import Login from "../../../pages/Auth/Login";
@@ -8,17 +8,12 @@ import { Querys } from "../../../context/Querys";
 const CardPokemon = (props) => {
   const { name, poster, url } = props.data;
   const { modal, data } = useAuth();
-  // console.log(data);
-
-  const addFavorite = async (data, array) => {
-    // console.log(data, array);
+  
+  const addFavorite = async (data, array,logout) => {
     const favorites =
       array.favorites ||
       JSON.parse(window.localStorage.getItem("favorites")).favorites;
-    // console.log(favorites);
-    // console.log(JSON.parse(window.localStorage.getItem('favorites')).favorites);
-    // favorites.includes(data);
-    // console.log(favorites.find((item)=> item.id === data.id));
+   
     if (!favorites.find((item) => item.id === data.id)) {
       console.log("no esta");
       array.setFavorites([...favorites, data]);
@@ -29,6 +24,11 @@ const CardPokemon = (props) => {
       
      const consulta = await new Querys().postFavorites(window.localStorage.getItem("favorites"));
      console.log(consulta);
+     if(consulta.status === 500){
+        console.log(consulta.message);
+        console.log(logout);
+        logout.logout();
+     }
     }
   };
   return (
@@ -43,7 +43,7 @@ const CardPokemon = (props) => {
             modal.openModal(true, "login", <Login pokemon={props.data} />);
             return;
           } else {
-            addFavorite(props.data, data.favorites);
+            addFavorite(props.data, data.favorites,data);
             return;
           }
         }}></FcLike>

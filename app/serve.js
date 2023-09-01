@@ -3,7 +3,7 @@ import {Router} from 'express';
 import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
 import { Querys } from './querys.js';
-import Buffer from 'buffer';
+// import Buffer from 'buffer';
 import { users } from './routes/users/index.js';
 import { pokemon } from './routes/pokemon/index.js';
 import { Crypto } from './encryp.js';

@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { URLAPIREST } from '../../Constants/constantes';
 import ShowPokemon from './show pokemon/ShowPokemon';
 
 const Pokemons = () => {
     const [data, setData] = useState(undefined);
     const {search} = useLocation();
-// console.log(search);
     const consulta = async()=>{
         try {
             const getPokemons = await fetch(URLAPIREST+'/pokemon'+search);
@@ -17,10 +16,13 @@ const Pokemons = () => {
             console.error(error);
             return null;
         }
-    }
+    };
     useEffect(() => {
         consulta()
     }, [search]);
+    if (data === false){
+        window.location.reload();
+    }
     return (
         <>
         {!data ? <h1>LOADIND</h1> : <ShowPokemon data={data}/>}

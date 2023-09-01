@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Querys } from "../../context/Querys";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
+import { json } from "body-parser";
 
 const Users = () => {
   const [usersData, setUsersData] = useState([]);
@@ -19,12 +20,13 @@ const Users = () => {
           <div key={users["_id"]}>
             <Link to={"/pokemon/" + users["_id"]} onClick={() =>{
                 
+                window.localStorage.setItem('favoritesUser',JSON.stringify({favorites:users.favorites,id:users["_id"]}));
                  data.favorites.setFavorites(users.favorites);
                  data.favorites.setFavoritesUsers(users.name);
             }}>
               <h5>{users.name}</h5>
             </Link>
-            <aside>
+            <aside >
               {users.favorites.map((img) => (
                 <img
                   style={{ width: "50px" }}
