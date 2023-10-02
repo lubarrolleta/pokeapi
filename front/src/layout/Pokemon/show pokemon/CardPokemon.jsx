@@ -6,6 +6,7 @@ import Login from "../../../pages/Auth/Login";
 import { Querys } from "../../../context/Querys";
 
 const CardPokemon = (props) => {
+  console.log(props)
   const { name, poster, url } = props.data;
   const { modal, data } = useAuth();
   

@@ -4,6 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 
 const ShowPokemon = (props) => {
     const {data} = props;
+    console.log(data);
     const botones = {
         botones:[
            

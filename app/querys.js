@@ -18,7 +18,7 @@ export class Querys {
     // console.log(headers, body);
     // console.log(typeof(body));
     // console.log(Object.values(body)[1],'values');
-    
+
     const dodyParse = body;
     // console.log(dodyParse);
     try {
@@ -56,10 +56,29 @@ export class Querys {
       return { status: 500, statusText: "error vps", data: error.message };
     }
   }
+  async getTypePokemon(name) {
+    try {
+      const config = {
+        method: "GET",
+        url: process.env.pokemon + "/pokemon/" + name,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      const consulta = await axios(config);
+      // console.log(consulta.data,'linea 69 ----');
+      const result = consulta.data;
+      return result;
+    } catch (error) {
+      console.error(error);
+      return { status: 404, statusText: "Error Server", data: { results: [] } };
+    }
+  }
   async getPokemons(data) {
     // obtengo los pokemon
     // console.log(data.url.split("/"));
     try {
+      console.log(data, "data");
       const config = {
         method: data?.method, // obtengo el metodo para asi tener una funcion generica
         url: data.url.includes("pokemon")
@@ -69,21 +88,69 @@ export class Querys {
           "Content-Type": "application/json",
         },
       };
-      console.log(config.url);
+      // console.log(config.url);
       const consulta = await axios(config);
       // console.log(consulta);
       if (consulta.status === 200 && consulta.statusText === "OK") {
-        const response = {
-          status: !consulta.data ? 404 : consulta.status,
-          statusText: !consulta.data ? "fail" : consulta.statusText,
-          data: !consulta.data ? {data:null}:consulta.data,
-        };
         // console.log(consulta.data);
-        return response ? response : null;
+        const box = consulta.data.results;
+        const box2 = [];
+        // console.log(box2);
+        for (let i = 0; i < box.length; i++) {
+          try {
+            // console.log('---------------------------'+ i);
+            // console.log(box2[i].name);
+            const conf = {
+              method: 'get', // obtengo el metodo para asi tener una funcion generica
+              url: process.env.pokemon + '/pokemon' + "/" + box[i].name,
+              headers: {
+                "Content-Type": "application/json",
+              },
+            };
+            const typePoke = await axios(conf);
+            // const type = await typePoke.json();
+            // console.log(typePoke.data);
+            const pokefull = {
+              id:typePoke.data.id,
+              url: '/pokemon/'+typePoke.data.name,
+              name: typePoke.data.name,
+              poster:typePoke.data.sprites.front_default,
+              type : typePoke.data.types
+            };
+            box2.push(pokefull);
+            if(box2.length == box.length){
+              consulta.data.results = box2;
+              const next = consulta.data.next.replace(process.env.pokemon, "")
+              consulta.data.next = next;
+              const previous = consulta.data.previous && consulta.data.previous.replace(process.env.pokemon, "");
+              consulta.data.previous = previous
+            console.log('---------------------------');
+
+              // console.log(consulta.data.results);
+            console.log('---------------------------');
+
+              const response = {
+                status: !consulta.data ? 404 : consulta.status,
+                statusText: !consulta.data ? "fail" : consulta.statusText,
+                data: !consulta.data ? { data: null } : consulta.data,
+              };
+              // console.log(consulta.data,'data');
+              return response ? response : null;
+              // consulta.data.results = listNew;
+            }
+          } catch (error) {
+            console.error(error);
+            return false;
+          }
+        }
+
+        console.log("------------------------------------------");
+
+        
       }
     } catch (error) {
       console.error(error);
-      return {status: 404, statusText:'Error Server',data:{results:[]}};
+      return { status: 404, statusText: "Error Server", data: { results: [] } };
     }
     return data;
   }
@@ -104,14 +171,15 @@ export class Querys {
       const consulta = await axios(config);
       console.log(consulta.data);
       if (consulta.status === 200 && consulta.statusText === "OK") {
-        
         const response = {
           status: !consulta.data ? 406 : consulta.status,
           statusText: !consulta.data ? "user not created" : consulta.statusText,
-          data: !consulta.data ? {message:'user not created , Register'} : consulta.data,
+          data: !consulta.data
+            ? { message: "user not created , Register" }
+            : consulta.data,
         };
 
-        return response ;
+        return response;
       }
     } catch (error) {
       console.error(error);
@@ -155,25 +223,25 @@ export class Querys {
       return null;
     }
   }
-  async newUserPost(data){
+  async newUserPost(data) {
     try {
       const config = {
-        method:"post",
-        url :'https://us-east-1.aws.data.mongodb-api.com/app/data-fdyqt/endpoint/newUserPost',
-        headers:{
+        method: "post",
+        url: "https://us-east-1.aws.data.mongodb-api.com/app/data-fdyqt/endpoint/newUserPost",
+        headers: {
           "Content-Type": "application/json",
           "Access-Control-Request-Headers": "*",
           "api-key": process.env.APIKEYMONGO,
-          data:data
+          data: data,
         },
         // data: data.replace(/""/g,'')
       };
       const consulta = await axios(config);
-      const dataPrev ={
+      const dataPrev = {
         status: consulta.status,
         statusText: consulta.statusText,
-        data:consulta.data
-      }
+        data: consulta.data,
+      };
       return dataPrev;
     } catch (error) {
       console.error(error);
@@ -183,31 +251,32 @@ export class Querys {
   async getMe(data) {
     try {
       const config = {
-        method:"POST",
-        url :'https://us-east-1.aws.data.mongodb-api.com/app/data-fdyqt/endpoint/me',
-        headers:{
+        method: "POST",
+        url: "https://us-east-1.aws.data.mongodb-api.com/app/data-fdyqt/endpoint/me",
+        headers: {
           "Content-Type": "application/json",
           "Access-Control-Request-Headers": "*",
           "api-key": process.env.APIKEYMONGO,
-          data:data
-        }
-        
-      }
+          data: data,
+        },
+      };
       const consulta = await axios(config);
-      const dataPrev ={
+      const dataPrev = {
         status: consulta.status,
         statusText: consulta.statusText,
-         data: consulta.data ? {
-          id:consulta.data['_id'],
-          email:consulta.data.email,
-          name:consulta.data.name,
-          favorites: consulta.data.favorites
-        } : {message:"NOT"}
-      }
+        data: consulta.data
+          ? {
+              id: consulta.data["_id"],
+              email: consulta.data.email,
+              name: consulta.data.name,
+              favorites: consulta.data.favorites,
+            }
+          : { message: "NOT" },
+      };
       return dataPrev;
     } catch (error) {
       console.error(error);
-      return error.response
+      return error.response;
     }
   }
   async getUser() {

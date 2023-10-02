@@ -10,7 +10,7 @@ const Pokemons = () => {
         try {
             const getPokemons = await fetch(URLAPIREST+'/pokemon'+search);
             const dataPokemons = await getPokemons.json();
-            
+            // console.log(dataPokemons,'dataPokemons')
             setData(dataPokemons.status=== 200 ? dataPokemons: false);
         } catch (error) {
             console.error(error);

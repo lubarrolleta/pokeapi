@@ -11,7 +11,6 @@ import { login } from './routes/login/index.js';
 dotenv.config();
 const app = express();
 const port =process.env.PORT ;
-console.log(port);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json({extended: true}));
 const route = Router();
@@ -26,5 +25,5 @@ app.get('/', function(req, res) {
 app.use('/pokemon',pokemon);  
 app.use('/users', users);
 app.use('/login', login);
-app.listen(port);
-console.log('API escuchando port'+ port);  
+app.listen(port,()=>{console.log(`API escuchando port ${port}`);});
+  
